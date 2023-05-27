@@ -1,8 +1,47 @@
 <!DOCTYPE html>
+<html>
 <head>
-  <title>M G C</title>  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Details</title>
+  <style>
+    body {
+      background-image: linear-gradient(to right top, #9a9af9, #9f98fa, #a395fb, #a992fb, #ae8ffb, #949cff, #7ca7ff, #69b0ff, #49c3ff, #47d3f8, #65e1ec, #8cece0);
+      text-align: center;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    h1{
+        font-size: 60px;
+        font-weight: bold;
+        margin: 10px;
+        font-family: monospace;
+        margin-top: 10px;
+    }
+     h2 {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 10px;
+      font-family: monospace;
+    }
+    .container{
+        margin-top: -300px;
+        text-align: left;
+    }
+    @media only screen and (max-width: 600px) {
+    
+    }
+  </style>
 </head>
 <body>
-<h1>Your Attendace is {{attend}} </h1>
+    <div class="container">
+    <h1>Attendance Details</h1>
+  <h2>Name: {{ name }}</h2>
+  <h2>Attendance : {{ att }}%</h2>
+  <h2>Semester : {{ semester }}%</h2>
+  <h2>Department : {{ dept }}%</h2>
+</div>
 </body>
 </html>

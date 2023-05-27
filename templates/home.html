@@ -1,16 +1,119 @@
 <!DOCTYPE html>
+<html>
 <head>
-  <title>M G C</title>  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <title>Login Form</title>
+ <style>
+    body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-image: linear-gradient(to right top, #9a9af9, #9f98fa, #a395fb, #a992fb, #ae8ffb, #949cff, #7ca7ff, #69b0ff, #49c3ff, #47d3f8, #65e1ec, #8cece0);
+}
+
+.container {
+  width: 300px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  text-align: center;
+  font-family: monospace;
+  font-size: 50px;
+  position: absolute;
+  margin-top: -320px;
+  
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 22px;
+  font-family: monospace;
+}
+
+input[type="text"],
+input[type="password"] {
+  width: 80%;
+  padding: 5px;
+  border-radius: 3px;
+  border: 2px solid #000000;
+  margin-left: 8px;
+}
+
+button {
+    
+  width: 90px;
+  padding: 10px;
+  background-color: #6f62e7;
+  color: #fff;
+  border: 2px solid black;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-left: 90px;
+}
+
+button:hover {
+  background-color: #49c3ff;
+}
+#image{
+    height: 13%;
+    position: absolute;
+    margin-bottom: 530px ;
+}
+@media only screen and (max-width: 600px) {
+    .container {
+    width: 80%;
+    max-width: 400px;
+}
+    h2{
+        font-size: 28px;
+        margin-top: -340px;
+    }
+    #image{
+        height: 12%;
+        margin-bottom: 540px ;
+    }
+}
+ </style>
 </head>
 <body>
-<div>
-  <div class="home-container">
-    <form action="{{url_for ('result')}}" method="post" >
-    <input name ='id'type="text" placeholder="Your User ID" class="input home-userid" />
-    <input name='password'type="password" placeholder="Password" class="input home-password" />
-    <button type="submit" class="button home-button">Submit</button>
+    <img src="{{ url_for('static', filename='mgc-logo.png') }}" alt="Image" id = 'image'>
+    <h2>MGC ATTENDANCE CHECKER</h2>
+
+  <div class="container">
+    
+    <form id="login-form" action="{{ url_for('result') }}" method="post">
+    
+      <div class="form-group">
+        <label for="username">USER ID</label>
+        &nbsp
+        <input type="text" id="username" name="username" placeholder="User ID" >
+      </div>
+      <div class="form-group">
+        <label for="password">PASSWORD</label>
+        &nbsp
+        <input type="password" id="password" name="password" placeholder="Password" >
+      </div>
+      <div class="form-group">
+        &nbsp
+        <button type="submit">LOGIN</button>
+      </div>
     </form>
+    
   </div>
-</div>
+
 </body>
 </html>

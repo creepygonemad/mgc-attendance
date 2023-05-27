@@ -1,9 +1,10 @@
-from flask import Flask, render_template, request
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.wait import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from flask import Flask, render_template, request, url_for
+import requests
+from requests import adapters
+import ssl
+from urllib3 import poolmanager
+import json
+import re
 
 app = Flask(__name__)
 
@@ -13,45 +14,59 @@ def home():
 
 @app.route('/result', methods=['POST'])
 def result():
-    options = webdriver.ChromeOptions()
-    options.add_argument('--ignore-certificate-errors')
-    options.add_argument('--ignore-ssl-errors')
-    options.add_argument("--headless")
-    options.add_argument("--no-sandbox")
-    driver = webdriver.Chrome('C:\\Users\\Eren Jaeger\\Downloads\\chromedriver\\chromedriver.exe', chrome_options=options)
-    
-    id = request.form['id']
-    pwd = request.form['password']
-        
-    driver.get('https://mgc.ibossems.com/')
-    driver.maximize_window()
+    user = request.form['username']
+    pas = request.form['password']
+    form_url = 'https://mgc.ibossems.com/'
+    result_url = 'https://mgc.ibossems.com/student/'
+    list_url = 'https://mgc.ibossems.com/student/attendance/list'
+    details_url = 'https://mgc.ibossems.com/student/studentdetails'
+    class TLSAdapter(adapters.HTTPAdapter):
 
-    usr = driver.find_element(By.NAME, "username")
-    usr.send_keys(id)
+        def init_poolmanager(self, connections, maxsize, block=False):
+            ctx = ssl.create_default_context()
+            ctx.set_ciphers('DEFAULT@SECLEVEL=1')
+            self.poolmanager = poolmanager.PoolManager(
+                    num_pools=connections,
+                    maxsize=maxsize,
+                    block=block,
+                    ssl_version=ssl.PROTOCOL_TLS,
+                    ssl_context=ctx)
 
-    pas = driver.find_element(By.NAME, "password")
-    pas.send_keys(pwd)
-    pas.send_keys(Keys.ENTER)
+    session = requests.session()
+    session.mount('https://', TLSAdapter())
+    response1 = session.get(form_url)
+    payload = {
+            'username': user,
+            'password':pas
+        }
+    lis = {
+        'task':'LISTING'
+    }
+    lis_headers = {
+    'X-Requested-With': 'XMLHttpRequest',
+    'Sec-Fetch-Mode': 'cors',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    }
+   
+    response2 = session.post(result_url, data=payload)
+    if response2.status_code == 200:
+        response3 = session.get(details_url, headers=lis_headers)
+        if response3.status_code == 200:
+            match = re.search(r"name:'student_name',\s+value:'([^']+)'", response3.text)
+            department_match = re.search(r"name:'department',\s+value:'([^']+)'", response3.text)
+            academic_match = re.search(r"name:'academic',\s+value:'([^']+)'", response3.text)
+            student_name = match.group(1).strip() if match else None
+            sem = academic_match.group(1) if academic_match else None
+            dept = department_match.group(1) if department_match else None
+                
 
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[1]/a[2]/em[1]/span[1]/span[1]")))
-    driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[1]/a[2]/em[1]/span[1]/span[1]").click()
-
-    WebDriverWait(driver, 15).until(EC.element_to_be_clickable((By.ID, "ext-gen15")))
-    driver.find_element(By.ID, 'ext-gen15').click()
-
-    WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'x-grid3-cell-inner.x-grid3-col-6')))
-    tot_find = driver.find_elements(By.CLASS_NAME, 'x-grid3-cell-inner.x-grid3-col-6')
-    tot = [int(i.text.strip(' hours'))for i in tot_find if i.text]
-
-    ab_find = driver.find_elements(By.CLASS_NAME, 'x-grid3-cell-inner.x-grid3-col-7')
-    ab = [int(i.text.strip(' hours')) for i in ab_find if i.text]
-
-    pres_find = driver.find_elements(By.CLASS_NAME, 'x-grid3-cell-inner.x-grid3-col-8')
-    pres = [int(i.text.strip(' hours')) for i in pres_find if i.text]
-
-    att = sum(pres)/sum(tot)*100
-    final = round(att, 2)
-    return render_template('result.html', attend = final)
+        lis_response = session.post(list_url, headers=lis_headers, data=lis)
+        if lis_response.status_code == 200:
+            data = json.loads(lis_response.text)
+            present = [i['present'] for i in data['attends']]
+            tot = [i['total'] for i in data['attends']]
+            att_percent = round(sum(present) / sum(tot) * 100, 2)
+    return render_template('result.html', name = student_name, att= att_percent, semester = sem, dept= dept)
 
 if __name__=='__main__':
     app.run(debug=True)
