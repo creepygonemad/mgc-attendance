@@ -47,7 +47,6 @@ def result():
     'Sec-Fetch-Mode': 'cors',
     'Content-Type': 'application/x-www-form-urlencoded',
     }
-   
     response2 = session.post(result_url, data=payload)
     if response2.status_code == 200:
         response3 = session.get(details_url, headers=lis_headers)
