@@ -3,7 +3,19 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-    <title>Login Form</title>
+    <title>M G C | Attendance Checker</title>
+    <script>      
+      setTimeout(() => {
+        const flashMessage = document.getElementById("flash-message");
+        if (flashMessage) {
+        flashMessage.style.opacity = "0";
+        flashMessage.style.transition = "opacity 0.5s ease-in-out";
+        setTimeout(() => {
+          flashMessage.parentNode.removeChild(flashMessage);
+        }, 500);
+        }
+      }, 1700);
+      </script>
  <style>
     body {
   display: flex;
@@ -20,6 +32,7 @@
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: absolute;
 }
 
 h2 {
@@ -73,11 +86,35 @@ button:hover {
     position: absolute;
     margin-bottom: 530px ;
 }
+#flash-message{
+	font-size: 28px;
+	font-family:monospace;
+	text-align: center;
+ 
+}
 @media only screen and (max-width: 600px) {
     .container {
     width: 80%;
-    max-width: 400px;
+    max-width: 500px;
+    position: absolute;
+    height: auto;
 }
+    h2{
+        font-size: 28px;
+        margin-top: -340px;
+       
+    }
+    #image{
+        height: 12%;
+        margin-bottom: 540px ;
+        
+    }
+  }
+@media only screen and (max-device-width: 414px) {
+      .container {
+        width: 80%;
+        max-width: 400px;
+    }
     h2{
         font-size: 28px;
         margin-top: -340px;
@@ -110,10 +147,14 @@ button:hover {
       <div class="form-group">
         &nbsp
         <button type="submit">LOGIN</button>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <h3  id="flash-message" class="{{ messages[0][1] }}">{{ messages[0]  }}</h3>
+            {% endif %}
+          {% endwith %}
       </div>
     </form>
     
   </div>
-
 </body>
 </html>
