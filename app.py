@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, flash
+from flask import Flask, render_template, url_for, redirect, request, flash, send_from_directory
 import httpx
 import json
 import re
@@ -74,6 +74,10 @@ async def result():
                                            semester=sem,dept=dept, attendance_data=attendance_data, total_days=total_day)
     elif request.method == 'GET':
         return redirect(url_for('home'))
+
+@app.route('/ads.txt')
+def serve_ads_txt():
+     return send_from_directory(app.static_folder, 'ads.txt')
 
 if __name__ == '__main__':
     app.run(debug=True)
