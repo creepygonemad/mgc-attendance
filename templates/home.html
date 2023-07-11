@@ -131,6 +131,8 @@ button:hover {
 <body>
     <img src="{{ url_for('static', filename='mgc-logo.png') }}" alt="Image" id = 'image'>
     <h2>MGC ATTENDANCE CHECKER</h2>
+    
+    
 
   <div class="container">
     
@@ -149,6 +151,7 @@ button:hover {
       <div class="form-group">
         &nbsp
         <button type="submit">LOGIN</button>
+        <h4 style="color: grey;font-family: monospace; position:absolute;">This site is created by Creepy and Darkside</h4>
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <h3  id="flash-message" class="{{ messages[0][1] }}">{{ messages[0]  }}</h3>
@@ -158,5 +161,6 @@ button:hover {
     </form>
     
   </div>
+  
 </body>
 </html>
