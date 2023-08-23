@@ -5,6 +5,7 @@ import ssl
 from urllib3 import poolmanager
 import json
 import re
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -18,7 +19,9 @@ def home():
 def result():
     if request.method == 'POST':
         user = request.form['username']
-        pas = request.form['password']
+        pas = request.form['DOB']
+        original_date = datetime.strptime(pas, "%Y-%m-%d")
+        formatted_date = original_date.strftime("%y-%m-%d")
         form_url = 'https://mgc.ibossems.com/'
         result_url = 'https://mgc.ibossems.com/student/'
         list_url = 'https://mgc.ibossems.com/student/attendance/list'
@@ -40,7 +43,7 @@ def result():
         response1 = session.get(form_url)
         payload = {
                 'username': user,
-                'password':pas
+                'password':formatted_date
             }
         lis = {
             'task':'LISTING'
