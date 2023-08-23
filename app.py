@@ -20,8 +20,12 @@ def result():
     if request.method == 'POST':
         user = request.form['username']
         pas = request.form['DOB']
-        original_date = datetime.strptime(pas, "%Y-%m-%d")
-        formatted_date = original_date.strftime("%y-%m-%d")
+        try:
+            original_date = datetime.strptime(pas, "%Y-%m-%d")
+            formatted_date = original_date.strftime("%y-%m-%d")
+        except ValueError:
+            flash('Please select DOB')
+            return redirect(url_for('home'))
         form_url = 'https://mgc.ibossems.com/'
         result_url = 'https://mgc.ibossems.com/student/'
         list_url = 'https://mgc.ibossems.com/student/attendance/list'
