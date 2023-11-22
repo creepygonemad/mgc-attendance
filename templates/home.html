@@ -47,7 +47,7 @@ h2 {
 }
 
 .form-group {
-  margin-bottom: 10px;
+  margin-bottom: 35px;
 }
 
 label {
@@ -107,6 +107,10 @@ h5{
   text-align: center;
   margin-left: 18px;
 }
+.a{
+  text-align: center;
+  color: #000000;
+}
 @media only screen and (max-width: 600px) {
     .container {
     width: 80%;
@@ -165,7 +169,8 @@ h5{
       <div class="form-group">
         &nbsp
         <button type="submit">LOGIN</button>
-        <h5 style="">This site is created by Creepy and Darkside</h5>
+        <h5 >Important! this service will going to end soon <a href="//forms.gle/XpxzjM3d5vF4cTGs8">Share your response</a></h5>
+        
         {% with messages = get_flashed_messages() %}
             {% if messages %}
                 <h3  id="flash-message" class="{{ messages[0][1] }}">{{ messages[0]  }}</h3>
