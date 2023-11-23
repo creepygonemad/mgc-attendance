@@ -159,27 +159,26 @@ h5{
 </head>
 <body>
     <img src="{{ url_for('static', filename='mgc-logo.png') }}" alt="Image" id = 'image'>
-    <h2>MGC ATTENDANCE CHECKER</h2>
+    <h2>MGC STAFF ATTENDANCE CHECKER</h2>
     
     
 
   <div class="container">
     
-    <form id="login-form" action="{{ url_for('result') }}" method="post">
+    <form id="login-form" action="{{ url_for('staff_attendance') }}" method="post">
     
       <div class="form-group">
-        <a href="{{ url_for('staff') }}" style="font-family: monospace;">STAFF LOGIN</a>
         <label for="username">USER ID</label>
         &nbsp
         <input type="text" id="username" name="username" placeholder="User ID" >
       </div>
       <div class="form-group">
-        <input type="date" name="DOB" class="datepicker" />
+        <input type="text" name="DOB"  placeholder="Password"  />
       </div>
       <div class="form-group">
         &nbsp
         <button type="submit">LOGIN</button>
-        <h5 >Important! this service will going to end soon <a href="//forms.gle/XpxzjM3d5vF4cTGs8">Share your response</a></h5>
+       
         
         {% with messages = get_flashed_messages() %}
             {% if messages %}
