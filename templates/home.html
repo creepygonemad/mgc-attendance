@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -44,43 +45,20 @@
           }
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Function to set login credentials in local storage
-        function setLoginCredentials() {
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
-            localStorage.setItem('username', username);
-            localStorage.setItem('password', password);
-        }
+       $(document).ready(function() {
+    $('#rememberMe').click(function() {
+        var isChecked = $(this).prop('checked');
+        $('#isChecked').val(isChecked);
+    });
 
-        // Function to retrieve login credentials from local storage
-        function getLoginCredentials() {
-            var username = localStorage.getItem('username');
-            var password = localStorage.getItem('password');
-            if (username && password) {
-                document.getElementById('username').value = username;
-                document.getElementById('password').value = password;
-            }
-        }
-
-        // Function to handle form submission
-        function handleSubmit() {
-            var rememberMeCheckbox = document.getElementById('rememberMe');
-            if (rememberMeCheckbox.checked) {
-                setLoginCredentials();
-            } else {
-                localStorage.removeItem('username');
-                localStorage.removeItem('password');
-            }
-            // Continue with form submission
-            return true;
-        }
-
-        // Event listener to load login credentials when the page loads
-        window.addEventListener('load', function() {
-            getLoginCredentials();
-        });
-    </script>
+    $('#login-form').submit(function(event) {
+        var isChecked = $('#rememberMe').prop('checked');
+        $('#isChecked').val(isChecked);
+    });
+});
+</script>
 </head>
 <body>
     <div class="container">
@@ -88,6 +66,20 @@
             <div class="col-md-6 text-center">
               <img src="{{ url_for('static', filename='mgc-logo.png') }}" alt="Image" class="mb-4">
               <h2 class="mb-4 text-center">MGC ATTENDANCE CHECKER</h2>
+              {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                {% for message in messages %}
+                <div class="alert alert-info  fade show" role="alert">
+                    {{ message }}
+                    
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
                 <div class="card">
                     <div class="card-body">
                         
@@ -102,7 +94,7 @@
                             </div>
                             <div class="mb-3 text-center">
                               <div class="form-check d-inline-block">
-                                  <input type="checkbox" class="form-check-input" id="rememberMe">
+                                  <input type="checkbox" class="form-check-input" id="rememberMe" name="isChecked">
                                   <label class="form-check-label" for="rememberMe">Remember me</label>
                               </div>
                             </div>
@@ -115,8 +107,22 @@
                     </div>
                 </div>
             </div>
+            
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            // Function to hide flash messages after 3 seconds
+            function hideFlashMessages() {
+                $('.alert').fadeOut(3000, function() {
+                    $(this).remove();
+                });
+            }
+
+            // Call the hideFlashMessages function when the page loads
+            hideFlashMessages();
+        });
+    </script>
 
     <!-- Bootstrap JS Bundle (Popper.js included) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
