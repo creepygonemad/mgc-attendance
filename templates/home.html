@@ -45,14 +45,42 @@
         }
     </style>
     <script>
-      // Initialize datepicker
-      $(document).ready(function(){
-          $('.datepicker').datepicker({
-              format: 'yyyy-mm-dd', // Set the desired date format
-              autoclose: true // Close the datepicker when a date is selected
-          });
-      });
-  </script>
+        // Function to set login credentials in local storage
+        function setLoginCredentials() {
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
+        }
+
+        // Function to retrieve login credentials from local storage
+        function getLoginCredentials() {
+            var username = localStorage.getItem('username');
+            var password = localStorage.getItem('password');
+            if (username && password) {
+                document.getElementById('username').value = username;
+                document.getElementById('password').value = password;
+            }
+        }
+
+        // Function to handle form submission
+        function handleSubmit() {
+            var rememberMeCheckbox = document.getElementById('rememberMe');
+            if (rememberMeCheckbox.checked) {
+                setLoginCredentials();
+            } else {
+                localStorage.removeItem('username');
+                localStorage.removeItem('password');
+            }
+            // Continue with form submission
+            return true;
+        }
+
+        // Event listener to load login credentials when the page loads
+        window.addEventListener('load', function() {
+            getLoginCredentials();
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -63,17 +91,24 @@
                 <div class="card">
                     <div class="card-body">
                         
-                        <form id="login-form" action="{{ url_for('result') }}" method="post">
+                        <form id="login-form" action="{{ url_for('result') }}" method="post" onsubmit="return handleSubmit()">
                             <div class="mb-3">
                                 <label for="username" class="form-label">USER ID</label>
                                 <input type="text" id="username" name="username" class="form-control" placeholder="User ID">
                             </div>
                             <div class="mb-3">
                                 <label for="DOB" class="form-label">PASSWORD</label>
-                                <input type="date"  name="DOB" class="form-control datepicker" placeholder="Date of Birth">
+                                <input type="date" id = "password" name="DOB" class="form-control datepicker" placeholder="Date of Birth">
+                            </div>
+                            <div class="mb-3 text-center">
+                              <div class="form-check d-inline-block">
+                                  <input type="checkbox" class="form-check-input" id="rememberMe">
+                                  <label class="form-check-label" for="rememberMe">Remember me</label>
+                              </div>
                             </div>
                             <div class="mb-3 text-center">
                                 <button type="submit" class="btn btn-primary">LOGIN</button>
+                                
                                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSfA45UHV-iKbm5YgiZzPOOm63y7_6swbX6Ql-8egltgK04ZsQ/viewform?usp=sf_link" class="text-decoration-none d-block mt-3">Review Us</a> 
                             </div>
                         </form>
