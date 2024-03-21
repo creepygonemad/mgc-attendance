@@ -13,11 +13,17 @@ app.secret_key = 'nathaanpuluthi'
 
 @app.route('/')
 def home():
+    if 'username' in session and 'password' in session:
+            user = session['username'] 
+            pas= session['password'] 
+            # Redirect to /result with stored credentials
+            return render_template('redirect_result.html', username=user, DOB=pas)
     return render_template('home.html')
 
-@app.route('/staff')
-def staff():
-    return render_template('staff.html')
+@app.route('/check_another')
+def check_another():
+    session.clear()
+    return render_template('home.html')
 
 # @app.route('/staff/attendance',  methods=['POST', 'GET'])
 # def staff_attendance():
