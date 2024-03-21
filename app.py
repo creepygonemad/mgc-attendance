@@ -23,8 +23,7 @@ def home():
 @app.route('/check_another')
 def check_another():
     session.clear()
-    return render_template('home.html')
-
+    return redirect(url_for('home'))
 # @app.route('/staff/attendance',  methods=['POST', 'GET'])
 # def staff_attendance():
 #     if request.method == 'POST':
