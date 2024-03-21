@@ -1,195 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D71JH22H01"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-D71JH22H01');
-</script>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8281376893196924"
-     crossorigin="anonymous"></script>
-    <title>M G C | Attendance Checker</title>
-    <script>      
-      setTimeout(() => {
-        const flashMessage = document.getElementById("flash-message");
-        if (flashMessage) {
-        flashMessage.style.opacity = "0";
-        flashMessage.style.transition = "opacity 0.5s ease-in-out";
-        setTimeout(() => {
-          flashMessage.parentNode.removeChild(flashMessage);
-        }, 500);
+    <title>MGC | Attendance Checker</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <!-- Google Tag Manager -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D71JH22H01"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-D71JH22H01');
+    </script>
+    <style>
+        body {
+            background-image: linear-gradient(to right top, #9a9af9, #9f98fa, #a395fb, #a992fb, #ae8ffb, #949cff, #7ca7ff, #69b0ff, #49c3ff, #47d3f8, #65e1ec, #8cece0);
+            
+            display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
         }
-      }, 1700);
-      </script>
- <style>
-    body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-image: linear-gradient(to right top, #9a9af9, #9f98fa, #a395fb, #a992fb, #ae8ffb, #949cff, #7ca7ff, #69b0ff, #49c3ff, #47d3f8, #65e1ec, #8cece0);
-}
-
-.container {
-  width: 300px;
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  position: absolute;
-}
-
-h2 {
-  text-align: center;
-  font-family: monospace;
-  font-size: 50px;
-  position: absolute;
-  margin-top: -320px;
-  
-}
-
-.form-group {
-  margin-bottom: 35px;
-}
-
-label {
-  display: block;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 10px;
-  font-size: 22px;
-  font-family: monospace;
-}
-
-input[type="text"]{
-  width: 80%;
-  padding: 5px;
-  border-radius: 3px;
-  border: 2px solid #000000;
-  margin-left: 8px;
-}
-input[type="date"] {
-  width: 80%;
-  padding: 5px;
-  border-radius: 3px;
-  border: 2px solid #000000;
-  margin-left: 15px;
-}
-
-button {
-    
-  width: 90px;
-  padding: 10px;
-  background-color: #6f62e7;
-  color: #fff;
-  border: 2px solid black;
-  border-radius: 7px;
-  cursor: pointer;
-  margin-left: 90px;
-}
-
-button:hover {
-  background-color: #49c3ff;
-}
-#image{
-    height: 13%;
-    position: absolute;
-    margin-bottom: 530px ;
-}
-#flash-message{
-	font-size: 28px;
-	font-family:monospace;
-	text-align: center;
- 
-}
-h5{
-  color: grey;
-  font-family: monospace; 
-  position:absolute;
-  text-align: center;
-  margin-left: 18px;
-}
-.a{
-  text-align: center;
-  color: #000000;
-}
-@media only screen and (max-width: 600px) {
-    .container {
-    width: 80%;
-    max-width: 500px;
-    position: absolute;
-    height: auto;
-}
-    h2{
-        font-size: 28px;
-        margin-top: -340px;
-       
+        .container {
+      
+      font-family: "Azeret Mono", monospace;
+      font-optical-sizing: auto;
+      font-weight: 300;
+      font-style: normal;
     }
-    #image{
-        height: 12%;
-        margin-bottom: 540px ;
-        
-    }
-    h5{
-      margin-left:0%;
-    }
-  }
-@media only screen and (max-device-width: 414px) {
-      .container {
-        width: 80%;
-        max-width: 400px;
-    }
-    h2{
-        font-size: 28px;
-        margin-top: -340px;
-    }
-    #image{
-        height: 12%;
-        margin-bottom: 540px ;
-    }
-}
- </style>
+        .form-control{
+          width: 80%;
+          margin: 0 auto;
+
+        }
+        @media (max-width: 767.98px) {
+          .card{
+            width: 85%;
+            margin: 0 auto;
+          }
+        }
+    </style>
+    <script>
+      // Initialize datepicker
+      $(document).ready(function(){
+          $('.datepicker').datepicker({
+              format: 'yyyy-mm-dd', // Set the desired date format
+              autoclose: true // Close the datepicker when a date is selected
+          });
+      });
+  </script>
 </head>
 <body>
-    <img src="{{ url_for('static', filename='mgc-logo.png') }}" alt="Image" id = 'image'>
-    <h2>MGC ATTENDANCE CHECKER</h2>
-    
-    
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6 text-center">
+              <img src="{{ url_for('static', filename='mgc-logo.png') }}" alt="Image" class="mb-4">
+              <h2 class="mb-4 text-center">MGC ATTENDANCE CHECKER</h2>
+                <div class="card">
+                    <div class="card-body">
+                        
+                        <form id="login-form" action="{{ url_for('result') }}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">USER ID</label>
+                                <input type="text" id="username" name="username" class="form-control" placeholder="User ID">
+                            </div>
+                            <div class="mb-3">
+                                <label for="DOB" class="form-label">PASSWORD</label>
+                                <input type="date"  name="DOB" class="form-control datepicker" placeholder="Date of Birth">
+                            </div>
+                            <div class="mb-3 text-center">
+                                <button type="submit" class="btn btn-primary">LOGIN</button>
+                                <!--<a href="{{ url_for('staff') }}" class="text-decoration-none d-block mt-3">STAFF LOGIN</a> -->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <div class="container">
-    
-    <form id="login-form" action="{{ url_for('result') }}" method="post">
-    
-      <div class="form-group">
-        <a href="{{ url_for('staff') }}" style="font-family: monospace;">STAFF LOGIN</a>
-        <label for="username">USER ID</label>
-        &nbsp
-        <input type="text" id="username" name="username" placeholder="User ID" >
-      </div>
-      <div class="form-group">
-        <input type="date" name="DOB" class="datepicker" />
-      </div>
-      <div class="form-group">
-        &nbsp
-        <button type="submit">LOGIN</button>
-        <h5 >Important! this service will going to end soon <a href="//forms.gle/XpxzjM3d5vF4cTGs8">Share your response</a></h5>
-        
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <h3  id="flash-message" class="{{ messages[0][1] }}">{{ messages[0]  }}</h3>
-            {% endif %}
-          {% endwith %}
-      </div>
-    </form>
-    
-  </div>
-  
+    <!-- Bootstrap JS Bundle (Popper.js included) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

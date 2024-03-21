@@ -1,92 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8281376893196924"
-     crossorigin="anonymous"></script>
   <title>M G C | Attendance Checker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8281376893196924" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body {
-      background-image: linear-gradient(to right top, #9a9af9, #9f98fa, #a395fb, #a992fb, #ae8ffb, #949cff, #7ca7ff, #69b0ff, #49c3ff, #47d3f8, #65e1ec, #8cece0);
-      text-align: center;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
-    h1{
-        font-size: 60px;
-        font-weight: bold;
-        margin: 10px;
-        font-family: monospace;
-        margin-top: 10px;
-        text-align: center;
-    }
-    h2 {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 10px;
-      font-family: monospace;
-    }
-    h3{
-      font-weight: bold;
-      font-family: monospace;
-      text-align: center;
-
-    }
-    .container{
-        text-align: left;
-        background-color: #fff;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-
-    }
-    hr {
+    hr{
       width: 100%; 
       height: 2px;
       border-width: 0px;
       color: black;
-      background-color: black;              
+      background-color: black;
     }
-    .pie{
-      max-width: 300px; 
-      margin: 0 auto;
+    .custom-background {
+      background-image: linear-gradient(to right top, #9a9af9, #9f98fa, #a395fb, #a992fb, #ae8ffb, #949cff, #7ca7ff, #69b0ff, #49c3ff, #47d3f8, #65e1ec, #8cece0);
     }
-    @media only screen and (max-width: 600px) {
-      .container {
-        width: 80%;
-        max-width: 400px;
-      }
-      h1 {
-        font-size: 30px;
-      }
-      h2 {
-        font-size: 14px;
-        
-      }
-      .pie{
-        max-width: 250px;
-      }
+    .card {
+      margin-top: 60px; /* Adjust this value as needed */
+    }
+    .card{
+      text-align: left;
     }
     
-  
+    .container {
+      
+      font-family: "Azeret Mono", monospace;
+      font-optical-sizing: auto;
+      font-weight: 300;
+      font-style: normal;
+    }
+    @media (min-width: 768px) {
+      .attendance-heading {
+        font-size: 45px;
+        
+      }
+      .card-text{
+        font-size: 18px;
+      }
+    }
+    @media (max-width: 767.98px) {
+      .attendance-heading {
+        font-size: 26px;
+      }
+      .pie canvas {
+        width: 100% !important; /* Adjust the canvas width to 100% */
+        height: auto !important; /* Allow height to adjust automatically */
+      }
+      
+      .body{
+        display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      }      
+      .pie{
+        max-width: 250px;
+        height: auto !important; /* Allow height to adjust automatically */
+        margin: 0 auto; 
+      }
+      .card{
+        height: min-content;
+        width: 85%;
+      }
+      .card-text{
+       font-size: 14px;
+      }
+      
+        
+      }
   </style>
 </head>
-<body>
+<body class="custom-background">
   <div class="container">
-    <h1>Attendance Details</h1>
-    <h2>Name: {{ name }}</h2>
-    <h2>Attendance : {{ att }}%</h2>
-    <h2>Current Semester : {{ semester }}</h2>
-    <h2>Department : {{year}}</h2>
-    <h2>{{ dept }}</h2>
-  </div>
-  <hr>
-  <div class="pie" >
-    <canvas id="attendanceChart"></canvas>
+    <div class="row mt-3">
+      <div class="col-md-6 offset-md-3 d-flex justify-content-center">
+        <div class="card ">
+          <div class="card-body">
+            <h1 class="card-title text-center attendance-heading">Attendance Details</h1>
+            <h2 class="card-text">Name: {{ name }}</h2>
+            <h2 class="card-text">Attendance : {{ att }}%</h2>
+            <h2 class="card-text">Current Semester : {{ semester }}</h2>
+            <h2 class="card-text">Department : {{ year }}</h2>
+            <h2 class="card-text">{{ dept }}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <div class="pie">
+          <canvas id="attendanceChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <h3 class="text-center">Total Working Days: {{ total_days }}</h3>
   </div>
 
   <script>
@@ -109,7 +124,5 @@
       }
     });
   </script>
-  <h3>Total Working Days: {{total_days}}</h3>
-  <hr>
 </body>
 </html>
