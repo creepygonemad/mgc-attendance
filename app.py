@@ -117,7 +117,7 @@ def result():
                     
                     if attend['absent'] == 5:
                         send['full_abs'].append(attend['date'])
-        
+                tot_absent = len( [i for i in data['attends'] if i.get('absent') == 5])
                 present = [i['present'] for i in data['attends']]
                 tot = [i['total'] for i in data['attends']]
                 att_percent = round(sum(present) / sum(tot) * 100, 2)
@@ -133,7 +133,7 @@ def result():
             else:
                 year = '3rd Year'
         return render_template('result.html', name=student_name, att=att_percent, att_details = send,
-                    semester=sem,year=year,dept=dept, attendance_data=attendance_data, total_days=total_day)
+                    semester=sem,year=year,dept=dept, attendance_data=attendance_data, total_days=total_day,tot_abs = tot_absent)
     elif request.method == 'GET':
         if 'username' in session and 'password' in session:
             user = session['username'] 
