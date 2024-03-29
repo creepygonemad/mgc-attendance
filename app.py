@@ -6,7 +6,7 @@ from urllib3 import poolmanager
 import json
 import re
 from datetime import datetime
-
+import time
 
 app = Flask(__name__)
 app.secret_key = 'nathaanpuluthi'
@@ -53,6 +53,7 @@ def result():
     req_session.mount('https://', TLSAdapter())
         
     if request.method == 'POST':
+        start_time = time.time()
         user = request.form['username']
         pas = request.form['DOB']
         try:
@@ -70,8 +71,8 @@ def result():
         if remember_me:
             session['username'] = user
             session['password'] = pas
-            print(session.get('username'))
-        response1 = session.get(form_url)
+        
+        response1 = req_session.get(form_url)
         payload = {
                 'username': user,
                 'password':formatted_date
@@ -107,17 +108,22 @@ def result():
                 data = json.loads(lis_response.text)
                 send = {'od': [], 'absent': [], 'full_abs': []}
                 for attend in data['attends']:
+                    date = attend['date']
+                    absent_count = sum(1 for value in attend.values() if value == 'A')
+
                     if 'OD' in attend.values():
                         desired_keys = [key for key, value in attend.items() if value == 'OD']
-                        send['od'].append({attend['date']: desired_keys})
-                    
-                    if 0 < attend['absent'] < 5:
+                        send['od'].append({date: desired_keys})
+
+                    if 0 < absent_count < 5:
                         tmp = [key for key, value in attend.items() if value == 'A']
-                        send['absent'].append({attend['date']: tmp})
-                    
-                    if attend['absent'] == 5:
-                        send['full_abs'].append(attend['date'])
-                tot_absent = len( [i for i in data['attends'] if i.get('absent') == 5])
+                        send['absent'].append({date: tmp})
+
+                    if absent_count == 5:
+                        send['full_abs'].append(date)
+
+                tot_absent = len([attend for attend in data['attends'] if sum(1 for value in attend.values() if value == 'A') == 5])
+
                 present = [i['present'] for i in data['attends']]
                 tot = [i['total'] for i in data['attends']]
                 att_percent = round(sum(present) / sum(tot) * 100, 2)
@@ -132,6 +138,9 @@ def result():
                 year = '2nd Year'
             else:
                 year = '3rd Year'
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            print(elapsed_time)
         return render_template('result.html', name=student_name, att=att_percent, att_details = send,
                     semester=sem,year=year,dept=dept, attendance_data=attendance_data, total_days=total_day,tot_abs = tot_absent)
     elif request.method == 'GET':
