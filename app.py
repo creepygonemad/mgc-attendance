@@ -106,6 +106,17 @@ def result():
             lis_response = req_session.post(list_url, headers=lis_headers, data=lis)
             if lis_response.status_code == 200:
                 data = json.loads(lis_response.text)
+                attendance_percentage = []
+
+                cumulative_present = 0
+                cumulative_total = 0
+
+                for attend in data['attends']:
+                    cumulative_present += attend['present']
+                    cumulative_total += attend['total']
+                    percentage = round((cumulative_present / cumulative_total) * 100,2) if cumulative_total != 0 else 0
+                    attendance_percentage.append({'date': attend['date'], 'attendance_percentage': percentage})
+                
                 send = {'od': [], 'absent': [], 'full_abs': []}
                 for attend in data['attends']:
                     date = attend['date']
@@ -141,7 +152,7 @@ def result():
             end_time = time.time()
             elapsed_time = end_time - start_time
             print(elapsed_time)
-        return render_template('result.html', name=student_name, att=att_percent, att_details = send,
+        return render_template('result.html', name=student_name, att=att_percent, att_details = send,attendance_percentage=attendance_percentage,
                     semester=sem,year=year,dept=dept, attendance_data=attendance_data, total_days=total_day,tot_abs = tot_absent)
     elif request.method == 'GET':
         if 'username' in session and 'password' in session:
