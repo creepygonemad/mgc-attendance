@@ -105,7 +105,6 @@ This project simplifies and enhances the user experience for tracking student at
 ---
 
 ## Future Improvements
-- Add support for mobile devices.
 - Include faculty-facing features for better attendance management.
 - Implement push notifications for low attendance warnings.
 
