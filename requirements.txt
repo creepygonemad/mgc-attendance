@@ -2,4 +2,3 @@ urllib3
 flask
 requests
 httpx
-Flask[async]
