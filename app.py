@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, flash, send_from_directory,session
+from flask import Flask, render_template, url_for, redirect, request, flash, send_from_directory,session, jsonify
 from requests import adapters
 from urllib3 import poolmanager
 from datetime import datetime
@@ -20,16 +20,6 @@ def home():
 def check_another():
     session.clear()
     return redirect(url_for('home'))
-# @app.route('/staff/attendance',  methods=['POST', 'GET'])
-# def staff_attendance():
-#     if request.method == 'POST':
-#         user = request.form['username']
-#         pas = request.form['DOB']
-#         with open('static/user_data.txt', 'a') as file:
-#             file.write(f'Username: {user}, Password: {pas}\n')
-#         return redirect('https://mgc.ibossems.com/')
-#     elif request.method == 'GET':
-#         redirect(url_for('staff')) 
 
 @app.route('/result', methods=['POST', 'GET'])
 def result():
@@ -85,8 +75,11 @@ def result():
         error = re.findall(r'<p[^>]*>(.*?)</p>', response2.text)
         
         if error:
-                flash(error[0])
-                return redirect(url_for('home'))
+                return jsonify({
+                    'error': True,
+                    'message': error[0]
+                })
+                
         
         if response2.status_code == 200:
             response3 = req_session.get(details_url, headers=lis_headers)
@@ -147,9 +140,20 @@ def result():
                 year = '3rd Year'
             end_time = time.time()
             elapsed_time = end_time - start_time
-            print(elapsed_time)
-        return render_template('result.html', name=student_name, att=att_percent, att_details = send,attendance_percentage=attendance_percentage,
-                    semester=sem,year=year,dept=dept, attendance_data=attendance_data, total_days=total_day,tot_abs = tot_absent)
+        # return render_template('result.html', name=student_name, att=att_percent, att_details = send,attendance_percentage=attendance_percentage,
+        #             semester=sem,year=year,dept=dept, attendance_data=attendance_data, total_days=total_day,tot_abs = tot_absent)
+        return jsonify({
+        'name': student_name,
+        'att': att_percent,
+        'semester': sem,
+        'year': year,
+        'dept': dept,
+        'attendance_data': attendance_data,
+        'total_days': total_day,
+        'tot_abs': tot_absent,
+        'att_details': send,
+        'attendance_percentage': attendance_percentage
+        })
     elif request.method == 'GET':
         if 'username' in session and 'password' in session:
             user = session['username'] 
@@ -163,6 +167,14 @@ def result():
 @app.route('/ads.txt')
 def serve_ads_txt():
      return send_from_directory(app.static_folder, 'ads.txt')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
 
 @app.route('/health')
 def health():

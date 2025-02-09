@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - MGC Student Portal</title>
+    <!-- Same stylesheets as main page -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .navbar {
+            background-color: #646cdb;
+            padding: 1rem 0;
+        }
+
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+
+        .privacy-header {
+            background: #646cdb;
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .privacy-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .privacy-section {
+            margin-bottom: 30px;
+        }
+
+        .privacy-section h2 {
+            color: #646cdb;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #646cdb;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 40px 0;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('home') }}">
+                <i class="fas fa-graduation-cap me-2"></i>MGC Portal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="privacy-header">
+        <div class="container">
+            <h1 class="text-center">Privacy Policy</h1>
+            <p class="text-center mb-0">Last updated: March 2024</p>
+        </div>
+    </header>
+
+    <!-- Privacy Content -->
+    <div class="container">
+        <div class="privacy-content">
+            <div class="privacy-section">
+                <h2>1. Information We Collect</h2>
+                <p>When using the MGC Student Portal, we collect:</p>
+                <ul>
+                    <li>Student ID and Date of Birth for attendance verification</li>
+                    <li>Usage data and analytics information</li>
+                    <li>Device and browser information</li>
+                    <li>Cookies and similar tracking technologies</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>2. How We Use Your Information</h2>
+                <p>We use the collected information to:</p>
+                <ul>
+                    <li>Provide attendance checking services</li>
+                    <li>Maintain and improve our website</li>
+                    <li>Send important notifications about your attendance</li>
+                    <li>Analyze usage patterns to improve user experience</li>
+                    <li>Ensure the security of our services</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>3. Data Security</h2>
+                <p>We implement appropriate security measures to protect your information:</p>
+                <ul>
+                    <li>Secure SSL encryption for data transmission</li>
+                    <li>Regular security audits and updates</li>
+                    <li>Limited access to personal information</li>
+                    <li>Secure data storage systems</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>4. Cookies and Tracking</h2>
+                <p>We use cookies to:</p>
+                <ul>
+                    <li>Remember your login preferences</li>
+                    <li>Analyze site traffic and user behavior</li>
+                    <li>Improve our services</li>
+                    <li>Provide personalized content</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>5. Third-Party Services</h2>
+                <p>We may use third-party services that collect, monitor and analyze this information to improve our service's functionality. These third-party service providers have their own privacy policies addressing how they use such information.</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>6. Google AdSense</h2>
+                <p>We use Google AdSense to serve ads. Google AdSense may use cookies and web beacons to collect data. For more information about Google's privacy practices, please visit their privacy policy page.</p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>7. Your Rights</h2>
+                <p>You have the right to:</p>
+                <ul>
+                    <li>Access your personal information</li>
+                    <li>Correct inaccurate data</li>
+                    <li>Request deletion of your data</li>
+                    <li>Object to data processing</li>
+                </ul>
+            </div>
+
+            <div class="privacy-section">
+                <h2>8. Contact Information</h2>
+                <p>For any questions about this Privacy Policy, please contact:</p>
+                <p>Mar Gregorios College<br>
+                Mogappair West<br>
+                Chennai - 600037<br>
+                Email: info@mgcchennai.ac.in</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>© 2024 Mar Gregorios College. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="{{ url_for('home') }}" class="text-white me-3">Home</a>
+                    <a href="{{ url_for('terms') }}" class="text-white">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
