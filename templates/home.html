@@ -179,7 +179,42 @@
         .total h5{
             color: black;
         }
+        .modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
 
+.modal-header {
+    border-radius: 15px 15px 0 0;
+    border-bottom: none;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+.card {
+    transition: transform 0.3s;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.modal .btn-primary:hover {
+    background-color: #4a51bf !important;
+}
+
+.modal-body ul li {
+    margin-bottom: 8px;
+}
+
+.modal-title i {
+    font-size: 1.2em;
+}
         /* About Section */
 .about-card, .vision-mission-card {
     background: white;
@@ -329,14 +364,22 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <img src="{{ url_for('static', filename='mgc-logo.png') }}" alt="Image" class="mb-4">
-            <h1>Welcome to MGC Student Portal</h1>
-            <p class="lead">Your gateway to academic excellence and campus life</p>
-            <a href="#attendance" class="btn btn-primary btn-small" style="background-color: #646cdb;">Check Attendance </a>
+<section class="hero-section">
+    <div class="container">
+        <img src="{{ url_for('static', filename='mgc-logo.png') }}" alt="Image" class="mb-4">
+        <h1>Welcome to MGC Student Portal</h1>
+        <p class="lead">Your gateway to academic excellence and campus life</p>
+        <div class="alert alert-info mt-3">
+            <i class="fas fa-laptop-code me-2"></i>
+            <strong>Special Offer for Students!</strong> Final year computer projects will be done starting from ₹800. Price varies based on technologies used. 
+            <a href="https://api.whatsapp.com/send/?phone=917200626241&text&type=phone_number&app_absent=0" class="alert-link">Contact us for details</a>
         </div>
-    </section>
+        <a href="#attendance" class="btn btn-primary btn-small" style="background-color: #646cdb;">Check Attendance </a>
+    </div>
+</section>
+
+
+    
 
     <!-- Ad Space -->
     <div class="container">
@@ -555,14 +598,62 @@
         </div>
     </section>
 
-    <!-- Bottom Ad Space -->
-    <div class="container">
-        <div class="sponsor-space">
-            <h4>Advertisement Space</h4>
-            <p>This space is reserved for advertisements</p>
+    <div class="modal fade" id="pythonModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #646cdb; color: white;">
+                    <h5 class="modal-title">
+                        <i class="fas fa-python me-2"></i>Python Learning Opportunities
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <h6 class="fw-bold">
+                            <i class="fas fa-laptop-code me-2"></i>Python Classes
+                        </h6>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Basic Package - ₹1,000/month</h5>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>8 Sessions per month</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Full Basics to OOPS concepts</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Practice exercises</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Web Application API Development - ₹2,000/month</h5>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>12 Sessions per month</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Libraries (Flask, Django)</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>Real projects</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h6 class="fw-bold">
+                            <i class="fas fa-project-diagram me-2"></i>Project Development
+                        </h6>
+                        <p>Get your final year projects done professionally!</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-star text-warning me-2"></i>Starting from ₹800</li>
+                            <li><i class="fas fa-star text-warning me-2"></i>Custom requirements welcome</li>
+                            <li><i class="fas fa-star text-warning me-2"></i>Technical documentation included</li>
+                        </ul>
+                        <span>NOTE: This course is offered By this Site's Developer not the institution</span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <a href="https://api.whatsapp.com/send/?phone=917200626241&text&type=phone_number&app_absent=0" class="btn btn-primary" style="background-color: #646cdb;" 
+                       onclick="$('#pythonModal').modal('hide');">Contact Us</a>
+                </div>
+            </div>
         </div>
     </div>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
@@ -593,6 +684,8 @@
     <!-- Google tag (gtag.js) -->
 
     <script>
+
+
         $(document).ready(function () {
     // Form submission
     $('#attendance-form').on('submit', function (e) {
@@ -601,6 +694,13 @@
         // Show loading spinner
         $('body').append('<div id="loading"><i class="fas fa-spinner fa-spin fa-3x"></i></div>');
 
+        $('#pythonModal').modal('show');
+
+// Handle modal close event
+$('#pythonModal').on('hidden.bs.modal', function() {
+    // After modal is closed, proceed with form submission
+    submitAttendanceForm(formData);
+});
         $.ajax({
             url: "{{ url_for('result') }}",
             type: 'POST',
