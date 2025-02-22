@@ -164,6 +164,12 @@ def result():
             # Redirect to home if no stored credentials
             return redirect(url_for('home'))
 
+@app.errorhandler(404)
+def page_not_found(error):
+    path = request.path
+    app.logger.error(f'Page not found: {path}')
+    return render_template("404.html", path=path), 404
+
 @app.route('/ads.txt')
 def serve_ads_txt():
      return send_from_directory(app.static_folder, 'ads.txt')

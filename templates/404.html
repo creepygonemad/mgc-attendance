@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | MGC Student Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .error-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: clamp(1.5rem, 5vw, 3rem);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            animation: float 6s ease-in-out infinite;
+            margin: 20px;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .error-code {
+            font-size: clamp(60px, 15vw, 120px);
+            font-weight: 700;
+            color: #646cdb;
+            margin-bottom: clamp(10px, 3vw, 20px);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            line-height: 1;
+        }
+
+        .error-message {
+            font-size: clamp(18px, 4vw, 24px);
+            color: #333;
+            margin-bottom: clamp(15px, 4vw, 30px);
+        }
+
+        .error-path {
+            background: #f8f9fa;
+            padding: clamp(8px, 2vw, 10px) clamp(10px, 3vw, 20px);
+            border-radius: 10px;
+            color: #646cdb;
+            font-family: monospace;
+            margin: clamp(10px, 3vw, 20px) 0;
+            word-break: break-all;
+            font-size: clamp(12px, 3vw, 16px);
+        }
+
+        .back-button {
+            background: #646cdb;
+            color: white;
+            padding: clamp(10px, 3vw, 15px) clamp(20px, 5vw, 30px);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: clamp(10px, 3vw, 20px);
+            font-size: clamp(14px, 3.5vw, 16px);
+        }
+
+        .back-button:hover {
+            background: #4a51bf;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            color: white;
+        }
+
+        .error-icon {
+            font-size: clamp(40px, 10vw, 60px);
+            color: #646cdb;
+            margin-bottom: clamp(10px, 3vw, 20px);
+        }
+
+        .error-description {
+            font-size: clamp(14px, 3.5vw, 16px);
+            color: #666;
+            margin-bottom: clamp(15px, 4vw, 30px);
+            padding: 0 clamp(10px, 3vw, 20px);
+        }
+
+        /* Responsive Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: moveParticle 15s infinite linear;
+        }
+
+        @keyframes moveParticle {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(100vw, -100vh); }
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .error-container {
+                margin: 10px;
+                padding: 1.5rem;
+            }
+
+            .particles {
+                display: none; /* Hide particles on mobile for better performance */
+            }
+
+            body {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .error-container {
+                padding: 1rem;
+            }
+
+            .back-button {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            .error-container {
+                background: rgba(255, 255, 255, 0.9);
+            }
+
+            .error-path {
+                background: rgba(248, 249, 250, 0.9);
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            .error-container {
+                animation: none;
+            }
+
+            .particles {
+                display: none;
+            }
+
+            .back-button {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles">
+        <script>
+            if (window.innerWidth > 768) { // Only create particles on larger screens
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.width = Math.random() * 5 + 'px';
+                    particle.style.height = particle.style.width;
+                    particle.style.left = Math.random() * 100 + 'vw';
+                    particle.style.top = Math.random() * 100 + 'vh';
+                    particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                    document.querySelector('.particles').appendChild(particle);
+                }
+            }
+        </script>
+    </div>
+
+    <div class="error-container">
+        <i class="fas fa-exclamation-circle error-icon"></i>
+        <div class="error-code">404</div>
+        <div class="error-message">Oops! Page Not Found</div>
+        <div class="error-path">{{ path }}</div>
+        <p class="error-description">The page you're looking for doesn't exist or has been moved.</p>
+        <a href="{{ url_for('home') }}" class="back-button">
+            <i class="fas fa-home me-2"></i>Back to Home
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
