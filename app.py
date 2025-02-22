@@ -78,7 +78,7 @@ def result():
                 return jsonify({
                     'error': True,
                     'message': error[0]
-                })
+                }),400
                 
         
         if response2.status_code == 200:
