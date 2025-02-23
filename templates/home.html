@@ -7,6 +7,7 @@
     <meta name="description"
         content="MGC Student Portal - Your comprehensive platform for academic information, attendance tracking, and campus updates. Stay connected with Mar Gregorios College.">
     <title>MGC Student Portal | Academic Information & Attendance Tracker</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <meta name="google-adsense-account" content="ca-pub-8281376893196924">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
@@ -22,6 +23,7 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8281376893196924"
      crossorigin="anonymous"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2VJZEZJL14"></script>
+    <script nonce="{{ csp_nonce }}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}

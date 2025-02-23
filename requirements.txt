@@ -2,3 +2,7 @@ urllib3
 flask
 requests
 gunicorn
+flask-talisman 
+flask-cors 
+flask-limiter 
+pyOpenSSL
