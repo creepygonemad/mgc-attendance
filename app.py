@@ -29,7 +29,6 @@ def check_another():
 @app.route('/result', methods=['POST', 'GET'])
 def result():
     class TLSAdapter(adapters.HTTPAdapter):
-
         def init_poolmanager(self, connections, maxsize, block=False):
             ctx = ssl.create_default_context()
             ctx.set_ciphers('DEFAULT@SECLEVEL=1')
@@ -74,97 +73,162 @@ def result():
         session['username'] = user
         session['password'] = pas
     
-    response1 = req_session.get(form_url)
-    payload = {
+    try:
+        # Step 1: Get initial form
+        response1 = req_session.get(form_url, timeout=30)
+        if response1.status_code != 200:
+            return jsonify({'error': 'Unable to connect to the server. Please try again later.'})
+        
+        # Step 2: Login
+        payload = {
             'username': user,
-            'password':formatted_date
+            'password': formatted_date
         }
-    lis = {
-        'task':'LISTING'
-    }
-    lis_headers = {
-    'X-Requested-With': 'XMLHttpRequest',
-    'Sec-Fetch-Mode': 'cors',
-    'Content-Type': 'application/x-www-form-urlencoded',
-    }
-    response2 = req_session.post(result_url, data=payload)
-    error = re.findall(r'<p[^>]*>(.*?)</p>', response2.text)
-    
-    if error:
-        return jsonify({'error': error[0]})
-    
-    if response2.status_code == 200:
-        response3 = req_session.get(details_url, headers=lis_headers)
-        if response3.status_code == 200:
-            match = re.search(r"name:'student_name',\s+value:'([^']+)'", response3.text)
-            department_match = re.search(r"name:'department',\s+value:'([^']+)'", response3.text)
-            academic_match = re.search(r"name:'academic',\s+value:'([^']+)'", response3.text)
-            student_name = match.group(1).strip() if match else None
-            sem = academic_match.group(1) if academic_match else None
-            dept = department_match.group(1) if department_match else None
-                
-
-        lis_response = req_session.post(list_url, headers=lis_headers, data=lis)
-        if lis_response.status_code == 200:
+        
+        response2 = req_session.post(result_url, data=payload, timeout=30)
+        if response2.status_code != 200:
+            return jsonify({'error': 'Login request failed. Please check your credentials.'})
+        
+        # Check for login errors
+        error = re.findall(r'<p[^>]*>(.*?)</p>', response2.text)
+        if error:
+            return jsonify({'error': error[0]})
+        
+        # Step 3: Get student details
+        lis_headers = {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Sec-Fetch-Mode': 'cors',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        }
+        
+        response3 = req_session.get(details_url, headers=lis_headers, timeout=30)
+        if response3.status_code != 200:
+            return jsonify({'error': 'Unable to fetch student details. Please try again.'})
+        
+        # Extract student information
+        match = re.search(r"name:'student_name',\s+value:'([^']+)'", response3.text)
+        department_match = re.search(r"name:'department',\s+value:'([^']+)'", response3.text)
+        academic_match = re.search(r"name:'academic',\s+value:'([^']+)'", response3.text)
+        
+        student_name = match.group(1).strip() if match else "Unknown Student"
+        sem = academic_match.group(1) if academic_match else "Unknown Semester"
+        dept = department_match.group(1) if department_match else "Unknown Department"
+        
+        # Step 4: Get attendance data
+        lis = {'task': 'LISTING'}
+        lis_response = req_session.post(list_url, headers=lis_headers, data=lis, timeout=30)
+        
+        if lis_response.status_code != 200:
+            return jsonify({'error': 'Unable to fetch attendance data. Server returned an error.'})
+        
+        # Check if response is empty or not JSON
+        if not lis_response.text.strip():
+            return jsonify({'error': 'No attendance data available. The server returned an empty response.'})
+        
+        # Try to parse JSON with better error handling
+        try:
             data = json.loads(lis_response.text)
-            attendance_percentage = []
-
-            cumulative_present = 0
-            cumulative_total = 0
-
-            for attend in data['attends']:
-                cumulative_present += attend['present']
-                cumulative_total += attend['total']
-                percentage = round((cumulative_present / cumulative_total) * 100,2) if cumulative_total != 0 else 0
-                attendance_percentage.append({'date': attend['date'], 'attendance_percentage': percentage})
+        except json.JSONDecodeError as e:
+            # Log the actual response for debugging
+            print(f"JSON Decode Error: {e}")
+            print(f"Response content: {lis_response.text[:500]}...")  # First 500 chars
+            print(f"Response status: {lis_response.status_code}")
+            print(f"Response headers: {dict(lis_response.headers)}")
             
-            send = {'od': [], 'absent': [], 'full_abs': []}
-            for attend in data['attends']:
-                date = attend['date']
-                absent_count = sum(1 for value in attend.values() if value == 'A')
+            # Check if response contains HTML error page
+            if '<html' in lis_response.text.lower():
+                return jsonify({'error': 'Session expired or invalid. Please try logging in again.'})
+            
+            return jsonify({'error': 'Invalid response from server. The attendance data could not be processed.'})
+        
+        # Validate data structure
+        if not isinstance(data, dict) or 'attends' not in data:
+            return jsonify({'error': 'Invalid attendance data format received from server.'})
+        
+        if not data['attends']:
+            return jsonify({'error': 'No attendance records found for this student.'})
+        
+        # Process attendance data
+        attendance_percentage = []
+        cumulative_present = 0
+        cumulative_total = 0
 
-                if 'OD' in attend.values():
-                    desired_keys = [key for key, value in attend.items() if value == 'OD']
-                    send['od'].append({date: desired_keys})
+        for attend in data['attends']:
+            cumulative_present += attend.get('present', 0)
+            cumulative_total += attend.get('total', 0)
+            percentage = round((cumulative_present / cumulative_total) * 100, 2) if cumulative_total != 0 else 0
+            attendance_percentage.append({'date': attend.get('date', 'Unknown'), 'attendance_percentage': percentage})
+        
+        send = {'od': [], 'absent': [], 'full_abs': []}
+        for attend in data['attends']:
+            date = attend.get('date', 'Unknown')
+            absent_count = sum(1 for value in attend.values() if value == 'A')
 
-                if 0 < absent_count < 5:
-                    tmp = [key for key, value in attend.items() if value == 'A']
-                    send['absent'].append({date: tmp})
+            if 'OD' in attend.values():
+                desired_keys = [key for key, value in attend.items() if value == 'OD']
+                send['od'].append({date: desired_keys})
 
-                if absent_count == 5:
-                    send['full_abs'].append(date)
+            if 0 < absent_count < 5:
+                tmp = [key for key, value in attend.items() if value == 'A']
+                send['absent'].append({date: tmp})
 
-            tot_absent = len([attend for attend in data['attends'] if sum(1 for value in attend.values() if value == 'A') == 5])
+            if absent_count == 5:
+                send['full_abs'].append(date)
 
-            present = [i['present'] for i in data['attends']]
-            tot = [i['total'] for i in data['attends']]
-            att_percent = round(sum(present) / sum(tot) * 100, 2)
-            total_day = len(data['attends'])
-            attendance_data = {
-                'Present': att_percent,
-                'Absent': 100 - att_percent
-            }
-        if int(sem[-1])== 1 or int(sem[-1])== 2:
-            year = '1st Year'
-        elif int(sem[-1])== 3 or int(sem[-1])== 4:
-            year = '2nd Year'
-        else:
-            year = '3rd Year'
+        tot_absent = len([attend for attend in data['attends'] if sum(1 for value in attend.values() if value == 'A') == 5])
+
+        present = [i.get('present', 0) for i in data['attends']]
+        tot = [i.get('total', 0) for i in data['attends']]
+        
+        if sum(tot) == 0:
+            return jsonify({'error': 'No valid attendance data found.'})
+        
+        att_percent = round(sum(present) / sum(tot) * 100, 2)
+        total_day = len(data['attends'])
+        attendance_data = {
+            'Present': att_percent,
+            'Absent': 100 - att_percent
+        }
+        
+        # Determine year from semester
+        try:
+            sem_num = int(sem[-1]) if sem and sem[-1].isdigit() else 1
+            if sem_num in [1, 2]:
+                year = '1st Year'
+            elif sem_num in [3, 4]:
+                year = '2nd Year'
+            else:
+                year = '3rd Year'
+        except (ValueError, IndexError):
+            year = 'Unknown Year'
+        
         end_time = time.time()
         elapsed_time = end_time - start_time
-        print(elapsed_time)
-    return jsonify({
-        'name': student_name,
-        'att': att_percent,
-        'att_details': send,
-        'attendance_percentage': attendance_percentage,
-        'semester': sem,
-        'year': year,
-        'dept': dept,
-        'attendance_data': attendance_data,
-        'total_days': total_day,
-        'tot_abs': tot_absent
-    })
+        print(f"Request completed in {elapsed_time:.2f} seconds")
+        
+        return jsonify({
+            'name': student_name,
+            'att': att_percent,
+            'att_details': send,
+            'attendance_percentage': attendance_percentage,
+            'semester': sem,
+            'year': year,
+            'dept': dept,
+            'attendance_data': attendance_data,
+            'total_days': total_day,
+            'tot_abs': tot_absent
+        })
+        
+    except requests.exceptions.Timeout:
+        return jsonify({'error': 'Request timed out. The server is taking too long to respond. Please try again.'})
+    except requests.exceptions.ConnectionError:
+        return jsonify({'error': 'Connection failed. Please check your internet connection and try again.'})
+    except requests.exceptions.RequestException as e:
+        print(f"Request error: {e}")
+        return jsonify({'error': 'Network error occurred. Please try again later.'})
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        return jsonify({'error': 'An unexpected error occurred. Please try again later.'})
 
 @app.route('/favicon.ico')
 def favicon():
